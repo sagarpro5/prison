@@ -14,8 +14,13 @@ public class movement : MonoBehaviour
     [Header("Jump")]
     [SerializeField] float Jumpforce = 5f;
 
+    [Header("Sprint")]
+    bool IsSprint;
+
+
     [Header("KeyBinds")]
-    [SerializeField] KeyCode jumpkey = KeyCode.Space;
+    [SerializeField] KeyCode Jumpkey = KeyCode.Space;
+    [SerializeField] KeyCode Sprintkey = KeyCode.Space;
 
     [Header("Drag")]
     float groundDrag = 6f;
@@ -25,6 +30,7 @@ public class movement : MonoBehaviour
     float verticalInputs;
 
     [Header("Ground Detection")]
+    [SerializeField] Transform GroundCheck;
     [SerializeField] LayerMask groundlayer;
     bool isgrounded = false;
     float grounddistance = 0.4f;
@@ -64,11 +70,14 @@ public class movement : MonoBehaviour
     {
         MyInputs();
         dragecontrol();
-        isgrounded = Physics.CheckSphere(transform.position - new Vector3(0,1,0), grounddistance, groundlayer);
-        print(isgrounded);
-        if(Input.GetKeyDown(jumpkey) && isgrounded)
+        isgrounded = Physics.CheckSphere(GroundCheck.position, grounddistance, groundlayer);
+        if(Input.GetKeyDown(Jumpkey) && isgrounded)
         {
             Jump();
+        }
+        if(Input.GetKeyDown(Sprintkey))
+        {
+            IsSprint = true;
         }
         slopmovedir = Vector3.ProjectOnPlane(movedir, slophit.normal);
     }
@@ -109,10 +118,18 @@ public class movement : MonoBehaviour
         {
             r.AddForce(movedir.normalized * speed * 10f * airmultiplir, ForceMode.Acceleration);
         }
+        else if(isgrounded && IsSprint && !OnSloap())
+        {
+            r.AddForce(movedir.normalized * speed * 15f, ForceMode.Acceleration);
+        }
     }
 
     void Jump()
     {
-        r.AddForce(transform.up * Jumpforce, ForceMode.Impulse);
+        if(isgrounded)
+        {
+            r.velocity = new Vector3(r.velocity.x, 0, r.velocity.z);
+            r.AddForce(transform.up * Jumpforce, ForceMode.Impulse);
+        }
     }
 }
