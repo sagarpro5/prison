@@ -5,6 +5,7 @@ public class look : MonoBehaviour
     public Transform o;
     public float senx;
     public float seny;
+    public Wallrunning wallRun;
 
     float xrotation;
     float yrotation;
@@ -20,13 +21,6 @@ public class look : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MyInputs();
-        transform.rotation = Quaternion.Euler(xrotation, yrotation, 0);
-        o.localRotation = Quaternion.Euler(0, yrotation,0);
-    }
-
-    void MyInputs()
-    {
         float mousex = Input.GetAxisRaw("Mouse X") * Time.deltaTime * senx;
         float mousey = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * seny;
 
@@ -35,5 +29,8 @@ public class look : MonoBehaviour
 
         xrotation = Mathf.Clamp(xrotation, -90, 90);
 
+        transform.rotation = Quaternion.Euler(xrotation, yrotation, wallRun.tilt);
+        o.localRotation = Quaternion.Euler(0, yrotation,0);
     }
+
 }

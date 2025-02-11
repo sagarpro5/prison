@@ -106,6 +106,10 @@ public class movement : MonoBehaviour
 
     void moveplayer()
     {
+        if (IsSprint && OnSloap())
+        {
+            r.AddForce(slopmovedir.normalized * speed * 12f, ForceMode.Acceleration);
+        }
         if(isgrounded && !OnSloap())
         {
             r.AddForce(movedir.normalized * speed * 10f, ForceMode.Acceleration);
